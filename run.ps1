@@ -93,9 +93,6 @@
             $validValues -like "*$wordToComplete*"
         })]
     [string]$lyrics_stat,
-
-    [Parameter(HelpMessage = 'Accumulation of track listening history with Goofy.')]
-    [string]$urlform_goofy = $null,
     
 	[Parameter(HelpMessage = 'Accumulation of track listening history with Goofy.')]
     [string]$idbox_goofy = $null,
@@ -1303,10 +1300,7 @@ function Helper($paramname) {
                     $webjson.VariousJs.'dev-tools'.replace = $webjson.VariousJs.'dev-tools'.replace[1] 
                 }
             }
-
-            if (![string]::IsNullOrEmpty($urlform_goofy) -and ![string]::IsNullOrEmpty($idbox_goofy)) {
-               $webjson.VariousJs.goofyhistory.replace = $webjson.VariousJs.goofyhistory.replace -f "`"$urlform_goofy`"", "`"$idbox_goofy`""
-            }
+			
             else { Remove-Json -j $VarJs -p "goofyhistory" }
             
             if (!($ru)) { Remove-Json -j $VarJs -p "offrujs" }
@@ -1668,15 +1662,6 @@ If ($test_spa) {
         else {
             $podcast_off, $adsections_off = $false
         }
-    }
-	
-    # goofy History
-    if (![string]::IsNullOrEmpty($urlform_goofy) -and ![string]::IsNullOrEmpty($idbox_goofy)) {
-       $goofy = Get-Url (Get-Link -e "/js-helper/goofyHistory.js")
-
-       if ($goofy -ne $null) {
-           injection -p $xpui_spa_patch -f "spotx-helper" -n "goofyHistory.js" -c $goofy
-       }
     }
 
     # Static color for lyrics
