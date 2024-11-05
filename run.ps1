@@ -93,9 +93,6 @@
             $validValues -like "*$wordToComplete*"
         })]
     [string]$lyrics_stat,
-    
-	[Parameter(HelpMessage = 'Accumulation of track listening history with Goofy.')]
-    [string]$idbox_goofy = $null,
 
     [Parameter(HelpMessage = 'Error log ru string.')]
     [switch]$err_ru,
