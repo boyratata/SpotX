@@ -96,8 +96,8 @@
 
     [Parameter(HelpMessage = 'Accumulation of track listening history with Goofy.')]
     [string]$urlform_goofy = $null,
-
-    [Parameter(HelpMessage = 'Accumulation of track listening history with Goofy.')]
+    
+	[Parameter(HelpMessage = 'Accumulation of track listening history with Goofy.')]
     [string]$idbox_goofy = $null,
 
     [Parameter(HelpMessage = 'Error log ru string.')]
@@ -1304,8 +1304,8 @@ function Helper($paramname) {
                 }
             }
 
-            if ($urlform_goofy -and $idbox_goofy) {
-                $webjson.VariousJs.goofyhistory.replace = $webjson.VariousJs.goofyhistory.replace -f "`"$urlform_goofy`"", "`"$idbox_goofy`""
+            if (![string]::IsNullOrEmpty($urlform_goofy) -and ![string]::IsNullOrEmpty($idbox_goofy)) {
+               $webjson.VariousJs.goofyhistory.replace = $webjson.VariousJs.goofyhistory.replace -f "`"$urlform_goofy`"", "`"$idbox_goofy`""
             }
             else { Remove-Json -j $VarJs -p "goofyhistory" }
             
@@ -1671,14 +1671,12 @@ If ($test_spa) {
     }
 	
     # goofy History
-    if ($urlform_goofy -and $idbox_goofy) {
+    if (![string]::IsNullOrEmpty($urlform_goofy) -and ![string]::IsNullOrEmpty($idbox_goofy)) {
+       $goofy = Get-Url (Get-Link -e "/js-helper/goofyHistory.js")
 
-        $goofy = Get -Url (Get-Link -e "/js-helper/goofyHistory.js")
-        
-        if ($goofy -ne $null) {
-
-            injection -p $xpui_spa_patch -f "spotx-helper" -n "goofyHistory.js" -c $goofy
-        }
+       if ($goofy -ne $null) {
+           injection -p $xpui_spa_patch -f "spotx-helper" -n "goofyHistory.js" -c $goofy
+       }
     }
 
     # Static color for lyrics
