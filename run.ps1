@@ -1,4 +1,3 @@
-param
 (
 
     [Parameter(HelpMessage = "Change recommended version of Spotify.")]
@@ -84,9 +83,6 @@ param
     
     [Parameter(HelpMessage = 'Returns old lyrics')]
     [switch]$old_lyrics,
-
-    [Parameter(HelpMessage = 'Disable native lyrics')]
-    [switch]$lyrics_block,
 
     [Parameter(HelpMessage = 'Do not create desktop shortcut.')]
     [switch]$no_shortcut,
@@ -621,7 +617,7 @@ if ($win10 -or $win11 -or $win8_1 -or $win8 -or $win12) {
         }
         if ($confirm_uninstall_ms_spoti) { $ch = 'y' }
         if ($ch -eq 'y') {      
-            $ProgressPreference = 'SilentlyContinue' # Hiding Progress Bars
+            $ProgressPreference = 'SilentlyContinue'
             if ($confirm_uninstall_ms_spoti) { Write-Host ($lang).MsSpoti3`n }
             if (!($confirm_uninstall_ms_spoti)) { Write-Host ($lang).MsSpoti4`n }
             Get-AppxPackage -Name SpotifyAB.SpotifyMusic | Remove-AppxPackage
@@ -1117,8 +1113,6 @@ function Helper($paramname) {
                 Move-Json -n 'DevicePickerSidePanel' -t $Enable -f $Disable
             }
 
-            if ([version]$offline -ge [version]'1.2.41.434' -and $lyrics_block) { Move-Json -n 'Lyrics' -t $Enable -f $Disable } 
-
             if ([version]$offline -eq [version]'1.2.30.1135') { Move-Json -n 'QueueOnRightPanel' -t $Enable -f $Disable }
 
             if (!($plus)) { Move-Json -n "Plus", "AlignedCurationSavedIn" -t $Enable -f $Disable }
@@ -1156,8 +1150,7 @@ function Helper($paramname) {
                     Move-Json -n 'RightSidebar' -t $Enable -from $Disable
                 }
                 else {
-                    if (!($rightsidebarcolor)) { Remove-Json -j $Enable -p 'RightSidebarColors' }
-                    if ($old_lyrics) { Remove-Json -j $Enable -p 'RightSidebarLyrics' } 
+                    if ($old_lyrics -and !$rightsidebar_off) { Remove-Json -j $Enable -p 'RightSidebarLyrics' }
                 }
             }
             if (!$premium) { Remove-Json -j $Enable -p 'RemoteDownloads' }
@@ -1284,8 +1277,6 @@ function Helper($paramname) {
             if ($topsearchbar -or ([version]$offline -ne [version]"1.2.45.451" -and [version]$offline -ne [version]"1.2.45.454")) { 
                 Remove-Json -j $VarJs -p "fixTitlebarHeight"
             }
-
-            if (!($lyrics_block)) { Remove-Json -j $VarJs -p "lyrics-block" }
 
             else { 
                 Remove-Json -j $VarJs -p "lyrics-old-on"
