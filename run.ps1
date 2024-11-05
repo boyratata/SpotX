@@ -1,3 +1,4 @@
+param
 (
 
     [Parameter(HelpMessage = "Change recommended version of Spotify.")]
@@ -93,6 +94,12 @@
             $validValues -like "*$wordToComplete*"
         })]
     [string]$lyrics_stat,
+
+    [Parameter(HelpMessage = 'Accumulation of track listening history with Goofy.')]
+    [string]$urlform_goofy = $null,
+
+    [Parameter(HelpMessage = 'Accumulation of track listening history with Goofy.')]
+    [string]$idbox_goofy = $null,
 
     [Parameter(HelpMessage = 'Error log ru string.')]
     [switch]$err_ru,
@@ -611,7 +618,7 @@ if ($win10 -or $win11 -or $win8_1 -or $win8 -or $win12) {
         }
         if ($confirm_uninstall_ms_spoti) { $ch = 'y' }
         if ($ch -eq 'y') {      
-            $ProgressPreference = 'SilentlyContinue'
+            $ProgressPreference = 'SilentlyContinue' # Hiding Progress Bars
             if ($confirm_uninstall_ms_spoti) { Write-Host ($lang).MsSpoti3`n }
             if (!($confirm_uninstall_ms_spoti)) { Write-Host ($lang).MsSpoti4`n }
             Get-AppxPackage -Name SpotifyAB.SpotifyMusic | Remove-AppxPackage
@@ -1144,7 +1151,8 @@ function Helper($paramname) {
                     Move-Json -n 'RightSidebar' -t $Enable -from $Disable
                 }
                 else {
-                    if ($old_lyrics -and !$rightsidebar_off) { Remove-Json -j $Enable -p 'RightSidebarLyrics' }
+                    if (!($rightsidebarcolor)) { Remove-Json -j $Enable -p 'RightSidebarColors' }
+                    if ($old_lyrics) { Remove-Json -j $Enable -p 'RightSidebarLyrics' } 
                 }
             }
             if (!$premium) { Remove-Json -j $Enable -p 'RemoteDownloads' }
@@ -1297,7 +1305,10 @@ function Helper($paramname) {
                     $webjson.VariousJs.'dev-tools'.replace = $webjson.VariousJs.'dev-tools'.replace[1] 
                 }
             }
-			
+
+            if ($urlform_goofy -and $idbox_goofy) {
+                $webjson.VariousJs.goofyhistory.replace = $webjson.VariousJs.goofyhistory.replace -f "`"$urlform_goofy`"", "`"$idbox_goofy`""
+            }
             else { Remove-Json -j $VarJs -p "goofyhistory" }
             
             if (!($ru)) { Remove-Json -j $VarJs -p "offrujs" }
@@ -1658,6 +1669,17 @@ If ($test_spa) {
         }
         else {
             $podcast_off, $adsections_off = $false
+        }
+    }
+	
+    # goofy History
+    if ($urlform_goofy -and $idbox_goofy) {
+
+        $goofy = Get -Url (Get-Link -e "/js-helper/goofyHistory.js")
+        
+        if ($goofy -ne $null) {
+
+            injection -p $xpui_spa_patch -f "spotx-helper" -n "goofyHistory.js" -c $goofy
         }
     }
 
