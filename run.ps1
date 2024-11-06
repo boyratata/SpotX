@@ -82,9 +82,6 @@ param
     [Parameter(HelpMessage = 'Enable right sidebar coloring to match cover color)')]
     [switch]$rightsidebarcolor,
     
-    [Parameter(HelpMessage = 'Returns old lyrics')]
-    [switch]$old_lyrics,
-
     [Parameter(HelpMessage = 'Do not create desktop shortcut.')]
     [switch]$no_shortcut,
 
@@ -1145,17 +1142,6 @@ function Helper($paramname) {
                 Remove-Json -j $Custom -p "NavAlt", 'NavAlt2'
                 Remove-Json -j $Enable -p 'RightSidebarLyrics', 'RightSidebarCredits', 'RightSidebar', 'LeftSidebar', 'RightSidebarColors'
             }
-            # New theme
-            else {
-                if ($rightsidebar_off -and [version]$offline -lt [version]"1.2.24.756") { 
-                    Move-Json -n 'RightSidebar' -t $Enable -from $Disable
-                }
-                else {
-                    if (!($rightsidebarcolor)) { Remove-Json -j $Enable -p 'RightSidebarColors' }
-                    if ($old_lyrics) { Remove-Json -j $Enable -p 'RightSidebarLyrics' } 
-                }
-            }
-            if (!$premium) { Remove-Json -j $Enable -p 'RemoteDownloads' }
 
             # Disable unimportant exp
             if ($exp_spotify) {
