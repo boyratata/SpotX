@@ -1,15 +1,5 @@
 @import url('colors.css');
 
-/* mini lyrics */
-.I2WIloMMjsBeMaIS8H3v,
-.McI3hD7aCfpq015LJa6X,
-.gpDSOimnzH4zTJmE7UR5 {
-    --lyrics-color-active: var(--current) !important;
-    --lyrics-color-inactive: var(--next) !important;
-    --lyrics-color-passed: var(--past) !important;
-    --lyrics-color-background: var(--background) !important;
-}
-
 /* lyrics description */
 .ebHsEf.I4K12o0qDoITOLr2AEs0,
 .ebHsEf.OYiGFGZJDIZ4FF4ZTDK2,
